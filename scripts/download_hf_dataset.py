@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from datasets import load_dataset
 import logging
+import sys
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 
@@ -37,20 +38,34 @@ def main():
     test_dir = data_dir / "test"
     data_dir.mkdir(exist_ok=True)
 
-    ds = load_dataset("lyleokoth/image-to-code-v1", split="train", streaming=True)
+    try:
+        ds = load_dataset(
+            "lyleokoth/image-to-code-v1", split="train", streaming=True
+        )
+    except Exception as exc:
+        logging.error("Failed to load dataset: %s", exc)
+        sys.exit(1)
 
     train_meta = save_split(ds.take(2000), train_dir, 2000)
     test_meta = save_split(ds.skip(2000).take(500), test_dir, 500)
 
-    with open(data_dir / "train.jsonl", "w") as f:
-        for row in train_meta:
-            json.dump(row, f)
-            f.write("\n")
+    try:
+        with open(data_dir / "train.jsonl", "w") as f:
+            for row in train_meta:
+                json.dump(row, f)
+                f.write("\n")
+    except Exception as exc:
+        logging.error("Failed to write training metadata: %s", exc)
+        sys.exit(1)
 
-    with open(data_dir / "test.jsonl", "w") as f:
-        for row in test_meta:
-            json.dump(row, f)
-            f.write("\n")
+    try:
+        with open(data_dir / "test.jsonl", "w") as f:
+            for row in test_meta:
+                json.dump(row, f)
+                f.write("\n")
+    except Exception as exc:
+        logging.error("Failed to write test metadata: %s", exc)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
