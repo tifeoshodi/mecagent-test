@@ -1,8 +1,23 @@
+
 ### Everything is explained in the good_luck.ipynb file.
 
-## Extras
 
-- `cadquery_tokenizer.py` provides a simple tokenizer for the CadQuery DSL.
-- `train_vision_encoder_decoder.py` is a scaffold training script using the
-  Hugging Face `Trainer` API. It trains a `VisionEncoderDecoderModel` for one
-  epoch on dummy data and logs training metrics to `metrics.csv`.
+# Project Overview
+
+
+## Environment Setup
+- Describe the required Python version and dependencies.
+- Instructions for creating and activating a virtual environment.
+
+## Baseline Model
+- Outline the initial model architecture and training process.
+
+## Enhancements
+- Summarize improvements and additional features tested.
+
+## Evaluation
+- Explain metrics and validation approach used to compare results.
+
+## Report Structure
+- Provide an overview of how to present findings and conclusions.
+
