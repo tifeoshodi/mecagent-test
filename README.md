@@ -126,7 +126,7 @@ For an interactive walkthrough, see Owein's `good_luck.ipynb`.
 
 ## Findings and Future Work
 
-### What We Accomplished
+### What Was Accomplished
 
 1. **Complete Documentation**: Enhanced README and DATASET guides with clear setup instructions
 2. **Dataset Pipeline**: Successfully downloaded 681 training samples with proper metadata structure  
