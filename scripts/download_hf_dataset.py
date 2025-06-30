@@ -3,6 +3,9 @@
 import json
 from pathlib import Path
 from datasets import load_dataset
+import logging
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 
 from PIL import Image
 
@@ -13,10 +16,17 @@ def save_split(dataset_iter, out_dir: Path, limit: int):
     for idx, sample in enumerate(dataset_iter):
         if idx >= limit:
             break
+        if not isinstance(sample, dict) or "image" not in sample or "code" not in sample:
+            raise ValueError(f"Sample at index {idx} missing required keys")
+
         image: Image.Image = sample["image"]
         code: str = sample["code"]
         img_path = out_dir / f"{idx:05d}.png"
-        image.save(img_path)
+        try:
+            image.save(img_path)
+        except Exception as exc:
+            logging.error("Failed to save image %s: %s", img_path, exc)
+            raise
         meta.append({"image_path": str(img_path), "code": code})
     return meta
 
