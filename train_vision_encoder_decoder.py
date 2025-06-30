@@ -55,6 +55,18 @@ def create_dummy_dataset(num_samples: int = 10, image_size: int = 64):
     return datasets.Dataset.from_dict({"image": images, "text": captions})
 
 
+def load_local_dataset(json_path: str):
+    """Load dataset metadata from a JSONL file with image paths and code."""
+    json_path = os.path.expanduser(json_path)
+    if not os.path.isfile(json_path):
+        raise FileNotFoundError(f"Dataset file not found: {json_path}")
+    dataset = datasets.load_dataset("json", data_files=json_path, split="train")
+    dataset = dataset.cast_column("image_path", datasets.Image())
+    dataset = dataset.rename_column("image_path", "image")
+    dataset = dataset.rename_column("code", "text")
+    return dataset
+
+
 def preprocess_dataset(dataset, feature_extractor, tokenizer, max_length: int = 32):
     def _process(example):
         try:
@@ -91,6 +103,16 @@ def main():
     parser.add_argument(
         "--csv-path", default="metrics.csv", help="Path to CSV metrics file"
     )
+    parser.add_argument(
+        "--train-json",
+        default="data/train.jsonl",
+        help="Path to training metadata JSONL",
+    )
+    parser.add_argument(
+        "--eval-json",
+        default="data/test.jsonl",
+        help="Path to evaluation metadata JSONL",
+    )
     args = parser.parse_args()
 
     model = transformers.VisionEncoderDecoderModel.from_encoder_decoder_pretrained(
@@ -100,8 +122,16 @@ def main():
     tokenizer = transformers.AutoTokenizer.from_pretrained("gpt2")
     tokenizer.pad_token = tokenizer.eos_token
 
-    dataset = create_dummy_dataset()
-    dataset = preprocess_dataset(dataset, feature_extractor, tokenizer)
+    train_dataset = load_local_dataset(args.train_json)
+    train_dataset = preprocess_dataset(train_dataset, feature_extractor, tokenizer)
+
+    eval_dataset = None
+    if args.eval_json:
+        try:
+            eval_dataset = load_local_dataset(args.eval_json)
+            eval_dataset = preprocess_dataset(eval_dataset, feature_extractor, tokenizer)
+        except FileNotFoundError as exc:
+            print(f"Evaluation dataset not found: {exc}")
 
     training_args = transformers.Seq2SeqTrainingArguments(
         output_dir=args.output_dir,
@@ -109,7 +139,7 @@ def main():
         per_device_eval_batch_size=args.batch_size,
         num_train_epochs=args.epochs,
         logging_steps=1,
-        save_steps=10,
+        save_strategy="epoch",
         remove_unused_columns=False,
         report_to=None,
     )
@@ -117,8 +147,8 @@ def main():
     trainer = transformers.Seq2SeqTrainer(
         model=model,
         args=training_args,
-        train_dataset=dataset,
-        eval_dataset=dataset,
+        train_dataset=train_dataset,
+        eval_dataset=eval_dataset if eval_dataset is not None else train_dataset,
         data_collator=transformers.default_data_collator,
     )
     trainer.add_callback(CSVLogger(args.csv_path))
