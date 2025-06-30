@@ -21,3 +21,7 @@
 ## Report Structure
 - Provide an overview of how to present findings and conclusions.
 
+## Dataset
+See [DATASET.md](DATASET.md) for instructions on downloading a small subset of
+the image-to-code dataset from HuggingFace using the provided helper script.
+
