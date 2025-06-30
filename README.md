@@ -1,6 +1,9 @@
+
+### Everything is explained in the good_luck.ipynb file.
+
+
 # Project Overview
 
-Everything is explained in the `good_luck.ipynb` notebook.
 
 ## Environment Setup
 - Describe the required Python version and dependencies.
@@ -17,3 +20,4 @@ Everything is explained in the `good_luck.ipynb` notebook.
 
 ## Report Structure
 - Provide an overview of how to present findings and conclusions.
+
