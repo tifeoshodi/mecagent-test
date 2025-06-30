@@ -196,7 +196,7 @@ For an interactive walkthrough, see Owein's `good_luck.ipynb`.
 - **Fallback Systems**: Implement graceful degradation when advanced models unavailable
 - **MLOps Pipeline**: Container-based deployment with model versioning and rollback capabilities
 
-**Key Strategic Shift**: Path A taught us that **infrastructure reliability > model sophistication**. Future work should prioritize robust, dependency-minimal systems over cutting-edge architectures that can't reliably run.
+**Key Strategic Shift**: **infrastructure reliability > model sophistication**. Future work should prioritize robust, dependency-minimal systems over cutting-edge architectures that can't reliably run.
 
 See [COMPARISON.md](COMPARISON.md) for detailed analysis of different training approaches and their implications.
 
