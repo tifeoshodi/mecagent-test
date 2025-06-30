@@ -1,24 +1,31 @@
 import argparse
 import csv
 import os
-from dataclasses import dataclass
 from typing import Any, Dict
 
-import numpy as np
-from datasets import Dataset
-from PIL import Image
-from transformers import (
-    AutoTokenizer,
-    ViTFeatureExtractor,
-    VisionEncoderDecoderModel,
-    Seq2SeqTrainer,
-    Seq2SeqTrainingArguments,
-    default_data_collator,
-    TrainerCallback,
-)
+
+class _LazyModule:
+    """Utility to lazily import modules when they are first needed."""
+
+    def __init__(self, module_name: str):
+        self.module_name = module_name
+        self._module = None
+
+    def __getattr__(self, attr: str):
+        if self._module is None:
+            import importlib
+
+            self._module = importlib.import_module(self.module_name)
+        return getattr(self._module, attr)
 
 
-class CSVLogger(TrainerCallback):
+np = _LazyModule("numpy")
+datasets = _LazyModule("datasets")
+Image = _LazyModule("PIL.Image")
+transformers = _LazyModule("transformers")
+
+
+class CSVLogger:
     """Log trainer metrics to a CSV file."""
 
     def __init__(self, csv_path: str):
@@ -38,17 +45,17 @@ class CSVLogger(TrainerCallback):
             writer.writerow({"epoch": state.epoch, **{k: float(v) for k, v in logs.items()}})
 
 
-def create_dummy_dataset(num_samples: int = 10, image_size: int = 64) -> Dataset:
+def create_dummy_dataset(num_samples: int = 10, image_size: int = 64):
     images = []
     captions = []
     for _ in range(num_samples):
         array = np.random.randint(0, 255, (image_size, image_size, 3), dtype=np.uint8)
         images.append(Image.fromarray(array))
         captions.append("dummy caption")
-    return Dataset.from_dict({"image": images, "text": captions})
+    return datasets.Dataset.from_dict({"image": images, "text": captions})
 
 
-def preprocess_dataset(dataset: Dataset, feature_extractor, tokenizer, max_length: int = 32) -> Dataset:
+def preprocess_dataset(dataset, feature_extractor, tokenizer, max_length: int = 32):
     def _process(example):
         try:
             pixel_values = feature_extractor(images=example["image"], return_tensors="pt").pixel_values[0]
@@ -86,17 +93,17 @@ def main():
     )
     args = parser.parse_args()
 
-    model = VisionEncoderDecoderModel.from_encoder_decoder_pretrained(
+    model = transformers.VisionEncoderDecoderModel.from_encoder_decoder_pretrained(
         "google/vit-base-patch16-224-in21k", "gpt2"
     )
-    feature_extractor = ViTFeatureExtractor.from_pretrained("google/vit-base-patch16-224-in21k")
-    tokenizer = AutoTokenizer.from_pretrained("gpt2")
+    feature_extractor = transformers.ViTFeatureExtractor.from_pretrained("google/vit-base-patch16-224-in21k")
+    tokenizer = transformers.AutoTokenizer.from_pretrained("gpt2")
     tokenizer.pad_token = tokenizer.eos_token
 
     dataset = create_dummy_dataset()
     dataset = preprocess_dataset(dataset, feature_extractor, tokenizer)
 
-    training_args = Seq2SeqTrainingArguments(
+    training_args = transformers.Seq2SeqTrainingArguments(
         output_dir=args.output_dir,
         per_device_train_batch_size=args.batch_size,
         per_device_eval_batch_size=args.batch_size,
@@ -107,12 +114,12 @@ def main():
         report_to=None,
     )
 
-    trainer = Seq2SeqTrainer(
+    trainer = transformers.Seq2SeqTrainer(
         model=model,
         args=training_args,
         train_dataset=dataset,
         eval_dataset=dataset,
-        data_collator=default_data_collator,
+        data_collator=transformers.default_data_collator,
     )
     trainer.add_callback(CSVLogger(args.csv_path))
     trainer.train()
