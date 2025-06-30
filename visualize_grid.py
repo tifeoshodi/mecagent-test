@@ -55,7 +55,7 @@ def plot_comparison_grid(images: Iterable[np.ndarray], baseline_meshes: Iterable
 
 
 if __name__ == "__main__":
-    # Example usage with dummy data
+    # EExample
     imgs = [np.random.rand(64, 64, 3) for _ in range(6)]
     cube = trimesh.creation.box()
     sphere = trimesh.creation.icosphere()

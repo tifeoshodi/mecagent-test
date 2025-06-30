@@ -57,6 +57,18 @@ def create_dummy_dataset(num_samples: int = 10, image_size: int = 64):
     return datasets.Dataset.from_dict({"image": images, "text": captions})
 
 
+def load_local_dataset(json_path: str):
+    """Load dataset metadata from a JSONL file with image paths and code."""
+    json_path = os.path.expanduser(json_path)
+    if not os.path.isfile(json_path):
+        raise FileNotFoundError(f"Dataset file not found: {json_path}")
+    dataset = datasets.load_dataset("json", data_files=json_path, split="train")
+    dataset = dataset.cast_column("image_path", datasets.Image())
+    dataset = dataset.rename_column("image_path", "image")
+    dataset = dataset.rename_column("code", "text")
+    return dataset
+
+
 def preprocess_dataset(dataset, feature_extractor, tokenizer, max_length: int = 32, augment: bool = False):
     def _process(example):
         try:
@@ -82,7 +94,7 @@ def preprocess_dataset(dataset, feature_extractor, tokenizer, max_length: int = 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Train a VisionEncoderDecoderModel on dummy data"
+        description="Train an enhanced VisionEncoderDecoderModel with optional data augmentation"
     )
     parser.add_argument(
         "--epochs", type=int, default=1, help="Number of training epochs"
@@ -91,13 +103,26 @@ def main():
         "--batch-size", type=int, default=2, help="Batch size per device"
     )
     parser.add_argument(
-        "--output-dir", default="./results", help="Directory for trainer outputs"
+        "--output-dir", default="./enhanced_results", help="Directory for trainer outputs"
     )
     parser.add_argument(
-        "--csv-path", default="metrics.csv", help="Path to CSV metrics file"
+        "--csv-path", default="enhanced_metrics.csv", help="Path to CSV metrics file"
     )
     parser.add_argument(
         "--augment", action="store_true", help="Apply random data augmentation"
+    )
+    parser.add_argument(
+        "--train-json",
+        default="data/train.jsonl",
+        help="Path to training metadata JSONL",
+    )
+    parser.add_argument(
+        "--eval-json",
+        default="data/test.jsonl",
+        help="Path to evaluation metadata JSONL",
+    )
+    parser.add_argument(
+        "--dummy-data", action="store_true", help="Use dummy data instead of real dataset (for testing)"
     )
     args = parser.parse_args()
 
@@ -108,8 +133,31 @@ def main():
     tokenizer = transformers.AutoTokenizer.from_pretrained("gpt2")
     tokenizer.pad_token = tokenizer.eos_token
 
-    dataset = create_dummy_dataset()
-    dataset = preprocess_dataset(dataset, feature_extractor, tokenizer, augment=args.augment)
+    if args.dummy_data:
+        print("Using dummy dataset for testing...")
+        train_dataset = create_dummy_dataset()
+        eval_dataset = train_dataset
+    else:
+        print(f"Loading training dataset from {args.train_json}...")
+        train_dataset = load_local_dataset(args.train_json)
+        
+        eval_dataset = None
+        if args.eval_json:
+            try:
+                print(f"Loading evaluation dataset from {args.eval_json}...")
+                eval_dataset = load_local_dataset(args.eval_json)
+            except FileNotFoundError as exc:
+                print(f"Evaluation dataset not found: {exc}")
+                print("Using training dataset for evaluation...")
+                eval_dataset = train_dataset
+
+    train_dataset = preprocess_dataset(train_dataset, feature_extractor, tokenizer, augment=args.augment)
+    if eval_dataset is not None:
+        eval_dataset = preprocess_dataset(eval_dataset, feature_extractor, tokenizer, augment=False)  # No augmentation for eval
+
+    print(f"Training samples: {len(train_dataset)}")
+    print(f"Evaluation samples: {len(eval_dataset) if eval_dataset else 0}")
+    print(f"Data augmentation: {'enabled' if args.augment else 'disabled'}")
 
     training_args = transformers.Seq2SeqTrainingArguments(
         output_dir=args.output_dir,
@@ -117,7 +165,8 @@ def main():
         per_device_eval_batch_size=args.batch_size,
         num_train_epochs=args.epochs,
         logging_steps=1,
-        save_steps=10,
+        save_strategy="epoch",
+        evaluation_strategy="epoch" if eval_dataset else "no",
         remove_unused_columns=False,
         report_to=None,
     )
@@ -125,13 +174,14 @@ def main():
     trainer = transformers.Seq2SeqTrainer(
         model=model,
         args=training_args,
-        train_dataset=dataset,
-        eval_dataset=dataset,
+        train_dataset=train_dataset,
+        eval_dataset=eval_dataset if eval_dataset is not None else train_dataset,
         data_collator=transformers.default_data_collator,
     )
     trainer.add_callback(CSVLogger(args.csv_path))
     trainer.train()
     trainer.save_model(args.output_dir)
+    print(f"Model saved to {args.output_dir}")
 
 
 if __name__ == "__main__":

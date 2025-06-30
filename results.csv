@@ -1,7 +1,6 @@
-Model,VSR,IOU,Delta
-
-baseline,1.0,0.5834943417057687,0
-enhanced,0,0,0
-
-baseline,1.0,0.022,0
+Model,VSR,IOU,Notes
+baseline,1.000,0.025,Constant prediction on 50 samples
+simple,0.000,0.000,Custom CNN+MLP trained on dummy data (262k params)
+improved,0.000,0.000,Better CNN+MLP trained on real data (1.7M params)
+enhanced_offline,N/A,N/A,ViT+GPT2 (210M params) - failed due to network dependency issues
 
