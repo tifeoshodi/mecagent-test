@@ -41,8 +41,38 @@ jupyter notebook good_luck.ipynb
 
 The scripts can also be executed directly, for example:
 
+## Enhancements
+- Summarize improvements and additional features tested.
+The training pipeline was extended with optional data augmentation. Images can
+now be randomly mirrored horizontally during preprocessing when the `--augment`
+flag is used in `enhanced_train.py`. The model checkpoints are saved to the
+specified output directory.
+
+## Evaluation
+- Explain metrics and validation approach used to compare results.
+`enhanced_eval.py` loads the saved model and evaluates a subset of the
+`CADCODER/GenCAD-Code` dataset using the same valid syntax rate and IoU metrics
+as `baseline_eval.py`. Due to environment constraints the full evaluation could
+not be completed during testing, so the `enhanced` row in `results.csv` is left
+at zero values.
+
+To reproduce the baseline evaluation on a small subset of the dataset, install
+the project dependencies and run:
+
+```bash
+pip install -e .
+python baseline_eval.py 5
+```
+
+This will compute the Valid Syntax Rate (VSR) and mean IOU for five examples and
+print the metrics used to update `results.csv`.
+
 ```bash
 python baseline_eval.py                # run the baseline metrics
 python train_vision_encoder_decoder.py # start training
 ```
+
+## Dataset
+See [DATASET.md](DATASET.md) for instructions on downloading a small subset of
+the image-to-code dataset from HuggingFace using the provided helper script.
 

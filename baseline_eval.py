@@ -52,4 +52,16 @@ def evaluate_baseline(num_samples: int = 100) -> None:
 
 
 if __name__ == "__main__":
-    evaluate_baseline()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Evaluate baseline model")
+    parser.add_argument(
+        "num_samples",
+        nargs="?",
+        type=int,
+        default=100,
+        help="Number of test samples to evaluate",
+    )
+
+    args = parser.parse_args()
+    evaluate_baseline(args.num_samples)
