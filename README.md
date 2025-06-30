@@ -18,6 +18,17 @@
 ## Evaluation
 - Explain metrics and validation approach used to compare results.
 
+To reproduce the baseline evaluation on a small subset of the dataset, install
+the project dependencies and run:
+
+```bash
+pip install -e .
+python baseline_eval.py 5
+```
+
+This will compute the Valid Syntax Rate (VSR) and mean IOU for five examples and
+print the metrics used to update `results.csv`.
+
 ## Report Structure
 - Provide an overview of how to present findings and conclusions.
 
