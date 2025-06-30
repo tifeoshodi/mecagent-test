@@ -50,11 +50,22 @@ def create_dummy_dataset(num_samples: int = 10, image_size: int = 64) -> Dataset
 
 def preprocess_dataset(dataset: Dataset, feature_extractor, tokenizer, max_length: int = 32) -> Dataset:
     def _process(example):
-        pixel_values = feature_extractor(images=example["image"], return_tensors="pt").pixel_values[0]
-        labels = tokenizer(example["text"], max_length=max_length, padding="max_length", truncation=True).input_ids
-        return {"pixel_values": pixel_values, "labels": labels}
+        try:
+            pixel_values = feature_extractor(images=example["image"], return_tensors="pt").pixel_values[0]
+            labels = tokenizer(
+                example["text"],
+                max_length=max_length,
+                padding="max_length",
+                truncation=True,
+            ).input_ids
+            return {"pixel_values": pixel_values, "labels": labels}
+        except Exception as exc:
+            print(f"Failed to process example: {exc}")
+            return {"pixel_values": None, "labels": None}
 
-    return dataset.map(_process)
+    processed = dataset.map(_process)
+    processed = processed.filter(lambda x: x["pixel_values"] is not None)
+    return processed
 
 
 def main():
