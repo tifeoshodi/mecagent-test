@@ -200,3 +200,20 @@ For an interactive walkthrough, see Owein's `good_luck.ipynb`.
 
 See [COMPARISON.md](COMPARISON.md) for detailed analysis of different training approaches and their implications.
 
+## API Server
+
+This repository now includes a small FastAPI application (`server.py`) that exposes
+an endpoint for retrieving the critical path of a project.
+
+Run the server:
+
+```bash
+uvicorn server:app --reload
+```
+
+Retrieve a project's critical path:
+
+```bash
+curl http://localhost:8000/projects/1/critical-path
+```
+
