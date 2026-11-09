@@ -55,8 +55,11 @@ def _load_solid_from_code(
 
     # Handle different CadQuery object types
     if isinstance(solid_obj, cq.Workplane):
-        # Extract the solid from the workplane
-        solid_obj = solid_obj.val()
+        # Extract the solid from the workplane context
+        try:
+            solid_obj = solid_obj.findSolid()
+        except Exception:
+            solid_obj = solid_obj.val()
 
     # Handle Compound objects (multiple solids combined)
     if hasattr(solid_obj, "Solids") and callable(getattr(solid_obj, "Solids")):
@@ -107,11 +110,11 @@ def evaluate_syntax_rate(
             solid = _load_solid_from_code(code, script_id)
             successful_count += 1
             if verbose:
-                print(f"✓ {script_id}: Successfully executed")
+                print(f"PASS {script_id}: Successfully executed")
         except Exception as exc:
             failed_ids.append(script_id)
             if verbose:
-                print(f"✗ {script_id}: {exc}")
+                print(f"FAIL {script_id}: {exc}")
 
     total_count = len(ids)
     vsr = successful_count / total_count if total_count > 0 else 0.0

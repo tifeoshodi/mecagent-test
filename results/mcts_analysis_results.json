@@ -1,0 +1,8 @@
+{
+  "num_samples": 35,
+  "vsr": 0.14285714285714285,
+  "vsr_successful": 5,
+  "vsr_total": 35,
+  "mean_iou_best": 0.36786250526275216,
+  "iou_valid_count": 3
+}

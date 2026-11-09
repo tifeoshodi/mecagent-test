@@ -10,6 +10,10 @@ import textwrap
 
 os.environ["CADQUERY_LOG_LEVEL"] = "ERROR"
 
+if os.name == "nt":
+    import atexit
+    atexit.register(lambda: (sys.stdout.flush(), sys.stderr.flush(), os._exit(0)))
+
 
 # ---------- helpers ---------------------------------------------------------
 
@@ -64,8 +68,11 @@ def _load_solid_from_code(
 
     # Handle different CadQuery object types
     if isinstance(solid_obj, cq.Workplane):
-        # Extract the solid from the workplane
-        solid_obj = solid_obj.val()
+        # Extract the solid from the workplane context
+        try:
+            solid_obj = solid_obj.findSolid()
+        except Exception:
+            solid_obj = solid_obj.val()
 
     # Handle Compound objects (multiple solids combined)
     if hasattr(solid_obj, "Solids") and callable(getattr(solid_obj, "Solids")):
@@ -97,9 +104,9 @@ def _load_solid(script_path: Path) -> cq.Solid:
 
 
 def _root_gyration(solid: Union[cq.Solid, cq.Compound]) -> float:
-    vol = solid.Volume()
+    vol = max(solid.Volume(), 1e-12)
     inertia = np.array(cq.Shape.matrixOfInertia(solid)).reshape(3, 3)
-    return np.sqrt(np.trace(inertia) / (2.0 * vol))
+    return np.sqrt(max(np.trace(inertia) / (2.0 * vol), 1e-12))
 
 
 def _normalized_mesh(
@@ -191,7 +198,21 @@ def _voxel_bool(mesh: trimesh.Trimesh, pitch: float = 0.05) -> np.ndarray:
 def iou_best(
     mesh_gt: trimesh.Trimesh, mesh_pred: trimesh.Trimesh, pitch: float = 0.05
 ) -> float:
-    """IOU after best principal-axis alignment (4 valid sign flips)."""
+    """IOU after best principal-axis alignment (4 valid sign flips).
+    
+    Auto-detects CUDA GPU for tensor acceleration; falls back to
+    numpy on CPU-only systems (e.g., Intel UHD Graphics).
+    """
+    # Auto-detect GPU availability
+    _use_cuda = False
+    try:
+        import torch
+        if torch.cuda.is_available():
+            _use_cuda = True
+            _device = torch.device("cuda")
+    except ImportError:
+        pass
+
     axes_gt = _principal_axes(mesh_gt)
     axes_pr = _principal_axes(mesh_pred)
 
@@ -205,8 +226,16 @@ def iou_best(
         # Use unified voxelization
         vox_gt, vox_pr = _voxel_bool_unified(mesh_gt, m_aligned, pitch)
 
-        inter = np.logical_and(vox_gt, vox_pr).sum()
-        union = np.logical_or(vox_gt, vox_pr).sum()
+        if _use_cuda:
+            # GPU path: tensor boolean operations
+            t_gt = torch.tensor(vox_gt, dtype=torch.bool, device=_device)
+            t_pr = torch.tensor(vox_pr, dtype=torch.bool, device=_device)
+            inter = torch.logical_and(t_gt, t_pr).sum().item()
+            union = torch.logical_or(t_gt, t_pr).sum().item()
+        else:
+            # CPU numpy path (default on this system)
+            inter = np.logical_and(vox_gt, vox_pr).sum()
+            union = np.logical_or(vox_gt, vox_pr).sum()
 
         if union > 0:
             iou = inter / union

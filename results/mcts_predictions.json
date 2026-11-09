@@ -1,0 +1,42 @@
+{
+  "predictions": {
+    "0000/00000797": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.box(20, 10, 25)\nbase = base.faces('<Y').workplane(offset=0)\nbase = base.rect(20, 25)\nbase = base.extrude(5)\nbase = base.faces('<Y').workplane(offset=0)\nresult = base",
+    "0000/00000915": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.box(20, 10, 15)\nbase = base.faces('>Z').workplane(offset=0)\nbase = base.circle(2)\nbase = base.rect(5, 5)\nbase = cq.Workplane('XY').workplane(offset=0)\nresult = base",
+    "0000/00001698": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.box(100, 20, 2)\nbase = base.faces('>Z').workplane(offset=0)\nbase = base.faces('<Z').workplane(offset=0)\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.faces('>Y').workplane(offset=0)\nresult = base",
+    "0000/00001907": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.pushPoints([[0, 0], [0, 10], [10, 10], [10, 5], [40, 5], [40, 0]])\nbase = base.extrude(5)\nbase = base.faces('>Z').workplane(offset=0)\nbase = base.rect(5, 10)\nbase = base.extrude(5)\nbase = base.union(base)\nresult = base",
+    "0000/00001926": "import cadquery as cq\nresult = None\nwheel_sketch_plane = cq.Workplane('YZ').workplane(offset=0)\nwheel_sketch_plane = wheel_sketch_plane.circle(10)\nwheel_sketch_plane = wheel_sketch_plane.extrude(10)\nwheel_sketch_plane = wheel_sketch_plane.faces('>X').workplane(offset=0)\nwheel_sketch_plane = wheel_sketch_plane.circle(3)\nresult = wheel_sketch_plane",
+    "0000/00002718": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.pushPoints([[0, 0], [20, 0], [20, 20], [15, 20], [15, 5], [5, 5], [5, 20], [0, 20], [0, 0]])\nbase = base.extrude(20)\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.faces('>Z').workplane(offset=0)\nbase = base.faces('<Z').workplane(offset=0)\nbase = base.faces('>X').workplane(offset=0)\nresult = base",
+    "0001/00014960": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.polygon(6, 2)\nbase = base.extrude(10)\nbase = base.edges('|Z').chamfer(2)\nbase = base.edges('>Z').chamfer(2)\nbase = base.edges('<Z').chamfer(2)\nbase = cq.Workplane('XY').workplane(offset=0)\nresult = base",
+    "0002/00024819": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.box(20, 15, 10)\nbase = base.faces('>Z').workplane(offset=0)\nbase = base.pushPoints([])\nbase = base.rect(20, 15)\nbase = base.extrude(10)\nbase = cq.Workplane('XY').workplane(offset=0)\nresult = base",
+    "0003/00039769": "",
+    "0005/00059989": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.cylinder(1, 10)\nbase = base.faces('>Z').workplane(offset=0)\nbase = base.hole(2, 20)\npart2 = part2.cylinder(1, 20)\npart2 = part2.faces('>X').workplane(offset=0)\nresult = part2",
+    "0007/00070015": "import cadquery as cq\nresult = None\nresult = result.polygon(6, 20)\nresult = result.extrude(5)\nresult = cq.Workplane('XY').workplane(offset=0)\nresult = result.faces('>Z').workplane(offset=0)\nresult = result.circle(3)\nresult = cq.Workplane('XY').workplane(offset=0)\nresult = result.circle(4)",
+    "0007/00070021": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.rect(30, 20)\nbase = base.extrude(1)\nbase = base.faces('>Z').workplane(offset=0)\nbase = base.circle(5)\nbase = base.hole(10, 1)\nbase = base.faces('<Z').workplane(offset=0)\nresult = base",
+    "0010/00106662": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.box(100, 10, 10)\nbase = base.edges('>X and >Z').chamfer(10)\nbase = base.edges('>X and <Z').chamfer(10)\nbase = base.edges('>X and <Y').chamfer(10)\nbase = base.edges('>X and >Y').chamfer(10)\nbase = cq.Workplane('XY').workplane(offset=0)\nresult = base",
+    "0011/00118368": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.box(100, 10, 5)\nbase = base.faces('>Z').workplane(offset=0)\nbase = base.pushPoints([[25, 0]])\nbase = base.polygon(6, 6)\nbase = base.cutThruAll()\nbase = base.pushPoints([[75, 0]])\nresult = base",
+    "0012/00129614": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.rect(20, 2)\nbase = base.extrude(1)\npart1 = cq.Workplane('XY').workplane(offset=0)\npart1 = part1.pushPoints([[-20, 4], [20, 4], [20, 6], [-20, 6]])\npart1 = part1.extrude(1)\nresult = part1",
+    "0014/00141107": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.box(10, 10, 20)\nbase = base.shell(1)\nbase = base.faces('>Z').workplane(offset=0)\nbase = base.rect(8, 8)\nbase = base.cutThruAll()\nbase = base.faces('<Z').workplane(offset=0)\nresult = base",
+    "0014/00144344": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.cylinder(1, 5)\nbase = base.hole(3)\npart2 = part2.cylinder(1, 2.5)\npart2 = part2.hole(1.5)\nresult = part2",
+    "0014/00144677": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XZ').workplane(offset=0)\nbase = base.pushPoints([[0, 0], [5, 0], [5, 3], [2, 3], [2, 10], [0, 10], [0, 0]])\nbase = base.extrude(2)\nbase = base.faces('>Y').workplane(offset=0)\nbase = base.pushPoints([[1, 8]])\nresult = base",
+    "0014/00144800": "import cadquery as cq\nresult = None",
+    "0015/00152464": "import cadquery as cq\nresult = None",
+    "0016/00167991": "import cadquery as cq\nresult = None",
+    "0018/00186338": "import cadquery as cq\nresult = None",
+    "0018/00189332": "import cadquery as cq\nresult = None",
+    "0019/00192544": "import cadquery as cq\nresult = None",
+    "0020/00201504": "import cadquery as cq\nresult = None\nbase = cq.Workplane('XY').workplane(offset=0)\nbase = base.box(20, 10, 10)\nbase = base.faces('>Z').workplane(offset=0)\nbase = cq.Workplane('XY').workplane(offset=-5)\nresult = base",
+    "0021/00211465": "import cadquery as cq\nresult = None",
+    "0021/00217029": "import cadquery as cq\nresult = None",
+    "0023/00231272": "import cadquery as cq\nresult = None",
+    "0023/00234447": "import cadquery as cq\nresult = None",
+    "0024/00241318": "import cadquery as cq\nresult = None",
+    "0024/00248776": "import cadquery as cq\nresult = None",
+    "0027/00271284": "import cadquery as cq\nresult = None",
+    "0027/00278384": "import cadquery as cq\nresult = None",
+    "0030/00302501": "import cadquery as cq\nresult = None",
+    "0030/00306373": "import cadquery as cq\nresult = None"
+  },
+  "errors": {
+    "0003/00039769": "'NoneType' object has no attribute 'get'"
+  }
+}

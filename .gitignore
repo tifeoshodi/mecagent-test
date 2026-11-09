@@ -8,3 +8,37 @@ wheels/
 
 # Virtual environments
 .venv
+venv/
+ENV/
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Large installer executables
+*.exe
+OllamaSetup*.exe
+
+# Large binary videos / raw captures (>100MB exceeds GitHub push limit)
+results/demo screen recordings/*.mkv
+*.mkv
+
+# Temporary CAD/render artifacts and caches
+cache/
+.agents/
+scratch/
+*.log
+temp_*
+pulley_*
+findsolid.*
+server_compiled.*
+test_render*
+test_render2*
+test.png
+
+# Node & Next.js (root fallbacks)
+node_modules/
+.next/

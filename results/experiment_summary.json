@@ -1,0 +1,9 @@
+[
+  {
+    "experiment": "enhanced_hybrid",
+    "vsr": 0.86,
+    "mean_iou_best": 0.3777435874271243,
+    "num_samples": 100,
+    "generation_time_s": 9266.266108989716
+  }
+]

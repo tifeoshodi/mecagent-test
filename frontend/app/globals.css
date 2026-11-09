@@ -1,0 +1,424 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root, [data-theme='light'] {
+  --bg-color: #faf7f2;
+  --bg-panel: rgba(255, 255, 255, 0.9);
+  --text-primary: #1c150e;
+  --text-secondary: #5c4d43;
+  --accent-primary: #8c531b;
+  --accent-hover: #b45309;
+  --accent-badge: #1c150e;
+  --border-color: rgba(140, 83, 27, 0.22);
+  --cad-sketch: #8c531b;
+  --cad-sketch-accent: #b45309;
+  --btn-gallery-bg: rgba(140, 83, 27, 0.08);
+  --btn-gallery-border: rgba(140, 83, 27, 0.65);
+  --btn-gallery-hover-bg: rgba(140, 83, 27, 0.18);
+  --btn-gallery-hover-border: #8c531b;
+  --btn-gallery-glow: rgba(180, 83, 9, 0.35);
+  --btn-primary-border: rgba(140, 83, 27, 0.4);
+  --btn-primary-hover-border: #ffffff;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(140, 83, 27, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(140, 83, 27, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --glass-blur: blur(12px);
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+}
+
+[data-theme='dim'] {
+  --bg-color: #171821;
+  --bg-panel: rgba(28, 32, 45, 0.75);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-primary: #38bdf8;
+  --accent-hover: #f59e0b;
+  --accent-badge: #0f172a;
+  --border-color: rgba(255, 255, 255, 0.12);
+  --cad-sketch: #38bdf8;
+  --cad-sketch-accent: #f59e0b;
+  --btn-gallery-bg: rgba(56, 189, 248, 0.1);
+  --btn-gallery-border: rgba(56, 189, 248, 0.6);
+  --btn-gallery-hover-bg: rgba(56, 189, 248, 0.22);
+  --btn-gallery-hover-border: #38bdf8;
+  --btn-gallery-glow: rgba(56, 189, 248, 0.45);
+  --btn-primary-border: rgba(255, 255, 255, 0.35);
+  --btn-primary-hover-border: #ffffff;
+}
+
+[data-theme='dark'] {
+  --bg-color: #080c14;
+  --bg-panel: rgba(14, 20, 32, 0.78);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-primary: #38bdf8;
+  --accent-hover: #f59e0b;
+  --accent-badge: #020617;
+  --border-color: rgba(56, 189, 248, 0.18);
+  --cad-sketch: #38bdf8;
+  --cad-sketch-accent: #f59e0b;
+  --btn-gallery-bg: rgba(56, 189, 248, 0.12);
+  --btn-gallery-border: rgba(56, 189, 248, 0.65);
+  --btn-gallery-hover-bg: rgba(56, 189, 248, 0.25);
+  --btn-gallery-hover-border: #38bdf8;
+  --btn-gallery-glow: rgba(56, 189, 248, 0.55);
+  --btn-primary-border: rgba(255, 255, 255, 0.35);
+  --btn-primary-hover-border: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Glassmorphism utility classes */
+.glass-panel {
+  background: var(--bg-panel);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+a, a:hover, a:focus, a:active, a:visited {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.button {
+  background-color: var(--accent-primary);
+  color: white;
+  border: 1.5px solid var(--btn-primary-border);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.15);
+}
+
+.button, .button:hover, .button:focus, .button:visited {
+  text-decoration: none !important;
+}
+
+.button:hover {
+  background-color: var(--accent-hover);
+  border-color: var(--btn-primary-hover-border);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 22px var(--btn-gallery-glow), 0 8px 25px -4px rgba(0, 0, 0, 0.25);
+  text-decoration: none !important;
+}
+
+/* CAD Technical Sketch Process Animations */
+@keyframes cadStrokeDraw {
+  0% {
+    stroke-dashoffset: 1200;
+    opacity: 0.1;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  45% {
+    stroke-dashoffset: 0;
+    opacity: 0.9;
+  }
+  80% {
+    stroke-dashoffset: 0;
+    opacity: 0.85;
+  }
+  95% {
+    opacity: 0.15;
+  }
+  100% {
+    stroke-dashoffset: 1200;
+    opacity: 0.1;
+  }
+}
+
+@keyframes cadConstDraw {
+  0% {
+    stroke-dashoffset: 600;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  50% {
+    stroke-dashoffset: 0;
+    opacity: 0.6;
+  }
+  85% {
+    stroke-dashoffset: 0;
+    opacity: 0.5;
+  }
+  100% {
+    stroke-dashoffset: 600;
+    opacity: 0;
+  }
+}
+
+@keyframes cadCursorTrace {
+  0% {
+    opacity: 0;
+    transform: translate(0px, 0px);
+  }
+  5% {
+    opacity: 1;
+  }
+  25% {
+    transform: translate(180px, 0px);
+  }
+  50% {
+    transform: translate(180px, 130px);
+  }
+  75% {
+    transform: translate(0px, 130px);
+  }
+  95% {
+    opacity: 1;
+    transform: translate(0px, 0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes cadPulseAnchor {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 1;
+  }
+}
+
+@keyframes cadRotateRotor {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cadRotateGearDriver {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cadRotateGearDriven {
+  0% {
+    transform: rotate(7.5deg);
+  }
+  100% {
+    transform: rotate(-352.5deg);
+  }
+}
+
+@keyframes cadFormulaFloat {
+  0%, 100% {
+    transform: translateY(0px);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+.font-display {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.cad-badge {
+  background-color: var(--accent-badge);
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:active {
+  transform: translateY(0) scale(1);
+}
+
+.button.secondary {
+  background-color: var(--btn-gallery-bg);
+  border: 1.5px solid var(--btn-gallery-border);
+  color: var(--text-primary);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button.secondary:hover {
+  background-color: var(--btn-gallery-hover-bg);
+  border-color: var(--btn-gallery-hover-border);
+  color: var(--text-primary);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 24px var(--btn-gallery-glow), 0 8px 20px -4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes spinTurbineY {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.button.icon-only {
+  padding: 8px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: rgba(150, 150, 150, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+select.input-field {
+  background-color: var(--bg-panel);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+select.input-field option {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  padding: 8px 12px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Page Layout (Floating Panels over Viewport) */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.viewport-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.panel-right {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
+  width: 320px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  transition: right var(--transition-normal);
+}
+
+.panel-bottom {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  /* Allow space for the right panel if it's not collapsed, or just set right to a fixed amount */
+  right: 352px; 
+  height: 100px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  transition: right var(--transition-normal);
+}
+
+.toolbar-top {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+}
+
+/* Micro-animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
